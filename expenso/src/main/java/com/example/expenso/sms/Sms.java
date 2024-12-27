@@ -1,11 +1,13 @@
 package com.example.expenso.sms;
 
+import com.example.expenso.common.commonExtend.CommonExtend;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
 
-public class Sms {
+public class Sms extends CommonExtend {
     private String referenceNumber;
     private Timestamp transactionDate;
     private BigDecimal amount;
@@ -15,7 +17,6 @@ public class Sms {
     private String transferTo;
     private String debitedAccountNumber;
     private String transactionType;
-    private String category;
     private String infoFrom = "SMS";
 
     public String getReferenceNumber() {
@@ -88,14 +89,6 @@ public class Sms {
 
     public void setTransactionType(String transactionType) {
         this.transactionType = transactionType;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public String getInfoFrom() {

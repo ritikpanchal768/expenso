@@ -1,5 +1,6 @@
 package com.example.expenso.userExpense;
 
+import com.example.expenso.common.commonResponse.CommonResponse;
 import com.example.expenso.sms.Sms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,17 +15,17 @@ import java.util.Optional;
 public class UserExpenseController {
     private static final Logger logger = LoggerFactory.getLogger(UserExpenseController.class);
     @PostMapping("/create/expense")
-    public ResponseEntity<Sms> addExpense(@RequestBody AddUserExpenseRequest request)throws Exception {
+    public CommonResponse<Sms> addExpense(@RequestBody AddUserExpenseRequest request)throws Exception {
         logger.info("************* Inside Add Expense Controller ****************");
 
-        ResponseEntity<Sms> responseEntity;
+        CommonResponse<Sms> commonResponse;
         try {
-            responseEntity = new ExpenseHelper().addRequest(request);
+            commonResponse = new ExpenseHelper().addRequest(request);
 
         } catch (Exception e) {
             throw new Exception(e);
         }
-        return ResponseEntity.ok(responseEntity.getBody());
+        return commonResponse;
 
     }
 

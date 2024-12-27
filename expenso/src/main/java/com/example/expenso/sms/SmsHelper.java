@@ -1,5 +1,8 @@
 package com.example.expenso.sms;
 
+import org.hibernate.annotations.CurrentTimestamp;
+import org.springframework.util.ObjectUtils;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -91,6 +94,11 @@ public class SmsHelper {
                 parsedSms.setTransactionType("unknown");
                 System.out.println("Transaction Type: unknown");
             }
+
+            if(!ObjectUtils.isEmpty(parsedSms.getTransferTo())) parsedSms.setTransactionType("DEBIT");
+            parsedSms.setDescription("Rs. "+parsedSms.getAmount() + " Transfered to " + parsedSms.getTransferTo());
+            parsedSms.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+            parsedSms.setCreatedBy("SYSTEM");
 
         } catch (Exception e) {
             e.printStackTrace();

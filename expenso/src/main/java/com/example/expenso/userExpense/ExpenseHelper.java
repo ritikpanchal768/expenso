@@ -1,23 +1,36 @@
 package com.example.expenso.userExpense;
 
+import com.example.expenso.common.ExpensoUtils;
+import com.example.expenso.common.commonResponse.CommonResponse;
 import com.example.expenso.sms.Sms;
 import com.example.expenso.sms.SmsHelper;
 import com.example.expenso.transaction.TransactionInfo;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
+import com.example.expenso.user.UserDetails;
+import com.example.expenso.user.UserHelper;
 
 public class ExpenseHelper {
-    public ResponseEntity<Sms> addRequest(AddUserExpenseRequest request)throws Exception{
+    public CommonResponse addRequest(AddUserExpenseRequest request)throws Exception{
 
+        CommonResponse commonResponse = new CommonResponse();
         UserExpense userExpense = new UserExpense();
         TransactionInfo transactionInfo = new TransactionInfo();
+//        *********** Fetch User Details **********
+        UserDetails userDetails = new UserHelper().viewByMobileNumber(request.getMobileNumber());
+
+//         ************** Parsing SMS ***************
+
         Sms parsedSms = new SmsHelper().parseSms(request.getSms());
-        if(!ObjectUtils.isEmpty(parsedSms.getTransferTo())) parsedSms.setTransactionType("DEBIT");
-        // Categorize the expense based on transferTo (recipient)
-        parsedSms.setCategory(categorizeExpense(parsedSms.getTransferTo()));
-        parsedSms.setDescription("Rs. "+parsedSms.getAmount() + " Transfered to " + parsedSms.getTransferTo());
-        return ResponseEntity.ok(parsedSms);
+
+//        ************** Populating Values **************
+
+        ExpensoUtils.copyNonNullFields(parsedSms,transactionInfo);
+        ExpensoUtils.copyNonNullFields(parsedSms,userExpense);
+        userExpense.setUserId(userDetails.getId());
+        userExpense.setCategory(categorizeExpense(parsedSms.getTransferTo()));
+
+        return commonResponse;
     }
+
     // Method to categorize the expense
     private String categorizeExpense(String transferTo) {
         // Lowercase the transferTo to make comparison case-insensitive
