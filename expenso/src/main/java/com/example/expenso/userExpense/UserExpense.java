@@ -1,9 +1,11 @@
 package com.example.expenso.userExpense;
 
+import com.example.expenso.common.commonExtend.CommonExtend;
+
 import java.math.BigDecimal;
 
 
-public class UserExpense {
+public class UserExpense extends CommonExtend {
     private String userId;
     private String category;
     private BigDecimal amount;

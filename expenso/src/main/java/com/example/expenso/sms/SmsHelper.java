@@ -1,5 +1,8 @@
 package com.example.expenso.sms;
 
+import org.hibernate.annotations.CurrentTimestamp;
+import org.springframework.util.ObjectUtils;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -14,7 +17,7 @@ public class SmsHelper {
         try {
             // Patterns for matching SMS content
             String accountPattern = "(A/c|A/C)\\s([A-Za-z0-9]+)(?:-debited)?"; // Account number pattern
-            String amountPattern = "(Rs?\\s?(\\d+(?:\\.\\d{1,2})?))|([\\d]+(?:\\.\\d{1,2})?)"; // Updated amount regex
+            String amountPattern = "(\\d{1,13}\\.\\d{1,2})"; // Updated amount regex
             String transferToPattern = "trf to\\s([A-Za-z\\s]+?)\\s?Ref"; // Transfer to (name of the recipient)
             String referencePattern = "(Ref\\s?No\\.?\\s?(\\d+))|(Refno\\s?(\\d+))"; // Reference number pattern (Ref No and Refno)
             String datePattern = "date\\s(\\d{1,2}[A-Za-z]{3}\\d{2})"; // Date pattern
@@ -35,8 +38,8 @@ public class SmsHelper {
             // Amount (with Rs or without Rs)
             Matcher amountMatcher = Pattern.compile(amountPattern).matcher(sms);
             if (amountMatcher.find()) {
-                String amountStr = amountMatcher.group(2) != null ? amountMatcher.group(2) : amountMatcher.group(3);
-                parsedSms.setAmount(new BigDecimal(amountStr)); // Group 2 or 3 for the amount value
+                String amountStr = amountMatcher.group(1);
+                parsedSms.setAmount(new BigDecimal(amountStr));
                 System.out.println("Amount: " + amountStr);
             }
 
@@ -91,6 +94,11 @@ public class SmsHelper {
                 parsedSms.setTransactionType("unknown");
                 System.out.println("Transaction Type: unknown");
             }
+
+            if(!ObjectUtils.isEmpty(parsedSms.getTransferTo())) parsedSms.setTransactionType("DEBIT");
+            parsedSms.setDescription("Rs. "+parsedSms.getAmount() + " Transfered to " + parsedSms.getTransferTo());
+            parsedSms.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+            parsedSms.setCreatedBy("SYSTEM");
 
         } catch (Exception e) {
             e.printStackTrace();

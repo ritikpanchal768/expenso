@@ -100,7 +100,9 @@ public class DbUtils {
                 field.setAccessible(true); // Access private fields
                 Object fieldValue = field.get(object);
 
-                if (!isSerializable(fieldValue) && !(field.getName().equalsIgnoreCase("createdOn") || field.getName().equalsIgnoreCase("modifiedOn"))) {
+                if (!isSerializable(fieldValue) && !(field.getName().equalsIgnoreCase("createdOn")
+                        || field.getName().equalsIgnoreCase("modifiedOn")
+                        || field.getName().equalsIgnoreCase("dateOfBirth"))) {
                     // If the field is not serializable, convert it to a JSON string
                     fieldValue = mapper.writeValueAsString(fieldValue); // Convert to JSON string
                 }
@@ -132,7 +134,7 @@ public class DbUtils {
         // Construct final SQL statement
         String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (" + placeholders + ")";
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/househood", "root", "ritik768");
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/expenso", "root", "ritik768");
              PreparedStatement stmt = con.prepareStatement(sql)) {
 
             // Set the JSON data column as the first parameter
