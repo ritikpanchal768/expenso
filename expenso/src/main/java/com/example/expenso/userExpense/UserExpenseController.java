@@ -2,6 +2,7 @@ package com.example.expenso.userExpense;
 
 import com.example.expenso.common.commonResponse.CommonResponse;
 import com.example.expenso.sms.Sms;
+import com.example.expenso.user.UserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +16,12 @@ import java.util.Optional;
 public class UserExpenseController {
     private static final Logger logger = LoggerFactory.getLogger(UserExpenseController.class);
     @PostMapping("/create/expense")
-    public CommonResponse<Sms> addExpense(@RequestBody AddUserExpenseRequest request)throws Exception {
+    public CommonResponse<UserExpense> addExpense(@RequestBody AddUserExpenseRequest request)throws Exception {
         logger.info("************* Inside Add Expense Controller ****************");
 
-        CommonResponse<Sms> commonResponse;
+        CommonResponse<UserExpense> commonResponse;
         try {
-            commonResponse = new ExpenseHelper().addRequest(request);
+            commonResponse = new ExpenseHelper().addExpenseRequest(request);
 
         } catch (Exception e) {
             throw new Exception(e);

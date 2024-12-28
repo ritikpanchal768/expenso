@@ -26,7 +26,7 @@ public class DbUtils {
      */
     public <T> T returnedAsObject(String query, Class<T> clazz, Object... parameters) throws Exception {
         T result = null;
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/househood", "root", "ritik768")) {
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/expenso", "root", "ritik768")) {
 
             // Use PreparedStatement to prevent SQL injection
             PreparedStatement preparedStatement = con.prepareStatement(query);
@@ -102,7 +102,8 @@ public class DbUtils {
 
                 if (!isSerializable(fieldValue) && !(field.getName().equalsIgnoreCase("createdOn")
                         || field.getName().equalsIgnoreCase("modifiedOn")
-                        || field.getName().equalsIgnoreCase("dateOfBirth"))) {
+                        || field.getName().equalsIgnoreCase("dateOfBirth")
+                        || field.getName().equalsIgnoreCase("transactionDate"))) {
                     // If the field is not serializable, convert it to a JSON string
                     fieldValue = mapper.writeValueAsString(fieldValue); // Convert to JSON string
                 }
@@ -197,7 +198,7 @@ public class DbUtils {
         // Construct final SQL statement
         String sql = "UPDATE " + tableName + " SET " + setClause + " WHERE id = ?";
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/househood", "root", "ritik768");
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/expenso", "root", "ritik768");
              PreparedStatement stmt = con.prepareStatement(sql)) {
 
             // Set field values dynamically in the prepared statement
@@ -226,7 +227,7 @@ public class DbUtils {
     public <T> List<T> returnedAsList(String query, Class<T> clazz, Object... parameters) throws Exception {
         List<T> resultList = new ArrayList<>();
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/househood", "root", "ritik768");
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/expenso", "root", "ritik768");
              PreparedStatement preparedStatement = con.prepareStatement(query)) {
 
             // Set parameters (if any) in the prepared statement
@@ -243,22 +244,26 @@ public class DbUtils {
             while (resultSet.next()) {
                 T instance = clazz.getDeclaredConstructor().newInstance(); // Create an instance of T
 
-                // Iterate over the fields of class T and populate them with result set data
-                for (Field field : clazz.getDeclaredFields()) {
-                    field.setAccessible(true); // Allow access to private fields
+                // Iterate over fields of the class and its superclasses
+                Class<?> currentClass = clazz;
+                while (currentClass != null) {
+                    for (Field field : currentClass.getDeclaredFields()) {
+                        field.setAccessible(true); // Allow access to private fields
 
-                    Object value = resultSet.getObject(field.getName());
+                        Object value = resultSet.getObject(field.getName());
 
-                    // Check if the field type is a class that requires deserialization from JSON
-                    if (value instanceof String && !field.getType().isPrimitive() && !field.getType().equals(String.class)) {
-                        // Deserialize JSON into the field's type
-                        value = mapper.readValue((String) value, field.getType());
+                        // Check if the field type requires deserialization from JSON
+                        if (value instanceof String && !field.getType().isPrimitive() && !field.getType().equals(String.class)) {
+                            // Deserialize JSON into the field's type
+                            value = mapper.readValue((String) value, field.getType());
+                        }
+
+                        // Set the value to the corresponding field in the instance
+                        if (value != null) {
+                            field.set(instance, value);
+                        }
                     }
-
-                    // Set the value to the corresponding field in the instance
-                    if (value != null) {
-                        field.set(instance, value);
-                    }
+                    currentClass = currentClass.getSuperclass(); // Move to the superclass
                 }
 
                 resultList.add(instance); // Add the populated instance to the result list
