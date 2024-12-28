@@ -6,12 +6,11 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 public class TransactionInfo extends CommonExtend {
     private String userId;
     private String referenceNumber;
-    private LocalDate transactionDate;
+    private Timestamp transactionDate;
     private BigDecimal amount;
     private String description;
     private String via;
@@ -37,11 +36,11 @@ public class TransactionInfo extends CommonExtend {
         this.referenceNumber = referenceNumber;
     }
 
-    public LocalDate getTransactionDate() {
+    public Timestamp getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDate transactionDate) {
+    public void setTransactionDate(Timestamp transactionDate) {
         this.transactionDate = transactionDate;
     }
 

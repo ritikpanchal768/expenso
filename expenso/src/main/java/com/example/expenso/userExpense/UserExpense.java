@@ -9,7 +9,7 @@ public class UserExpense extends CommonExtend {
     private String userId;
     private String category;
     private BigDecimal amount;
-    private String transactionReferenceNumber;
+    private String referenceNumber;
     private String sms;
 
     public String getUserId() {
@@ -28,12 +28,12 @@ public class UserExpense extends CommonExtend {
         this.sms = sms;
     }
 
-    public String getTransactionReferenceNumber() {
-        return transactionReferenceNumber;
+    public String getReferenceNumber() {
+        return referenceNumber;
     }
 
-    public void setTransactionReferenceNumber(String transactionReferenceNumber) {
-        this.transactionReferenceNumber = transactionReferenceNumber;
+    public void setReferenceNumber(String referenceNumber) {
+        this.referenceNumber = referenceNumber;
     }
 
     public String getCategory() {
