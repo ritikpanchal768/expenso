@@ -17,11 +17,12 @@ public class CategoryController {
 
     @PostMapping("/create/category")
     public CommonResponse addExpense(@RequestBody AddCategoryRequest request)throws Exception {
-        logger.info("************* Inside Add Expense Controller ****************");
+        logger.info("************* Inside Add Category Controller ****************");
 
         CommonResponse commonResponse = new CommonResponse();
         try {
             commonResponse = new CategoryHelper().addCategory(request);
+            logger.info("Category : {}{}",request.getCategory(),request.getTransferTo());
         } catch (Exception e) {
             throw new Exception(e);
         }

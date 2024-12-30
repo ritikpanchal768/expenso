@@ -17,6 +17,7 @@ public class TransactionController {
         CommonResponse commonResponse = new CommonResponse();
         try {
             TransactionInfo transactionInfo = new TransactionDataAccess().getByReferenceNo(referenceNumber);
+            logger.info("transactionInfo.transferTo {}:",transactionInfo.getTransferTo());
             commonResponse.setCode("200");
             commonResponse.setResponseMessage("Successfully Fetched");
             commonResponse.setResponseObject(transactionInfo);
