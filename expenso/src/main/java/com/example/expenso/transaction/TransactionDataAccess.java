@@ -10,7 +10,7 @@ public class TransactionDataAccess {
         return new DbUtils().returnedAsObject(query, TransactionInfo.class,referenceNo);
     }
     public List<TransactionDisplay> getByMobileNumber(String mobileNumber)throws Exception{
-        String query = "Select t.*,ue.* from transactionInfo t " +
+        String query = "Select DISTINCT t.*,ue.category from transactionInfo t " +
                 "join userdetails u on u.id = t.userid " +
                 "join userexpense ue on ue.referencenumber = t.referencenumber" +
                 " where u.mobileNumber = ? " +
