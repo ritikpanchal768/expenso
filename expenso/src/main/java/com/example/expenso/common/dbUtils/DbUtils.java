@@ -15,6 +15,10 @@ import java.util.Map;
 
 public class DbUtils {
 
+    final String url = System.getenv("DATASOURCE_URL");
+    final String user = System.getenv("DATASOURCE_USER");
+    final String password = System.getenv("DATASOURCE_PASSWORD");
+
     /**
      * Returns an object of type T populated with data from the database.
      *
@@ -26,7 +30,7 @@ public class DbUtils {
      */
     public <T> T returnedAsObject(String query, Class<T> clazz, Object... parameters) throws Exception {
         T result = null;
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/expenso", "root", "ritik768")) {
+        try (Connection con = DriverManager.getConnection(url, user, password)) {
 
             // Use PreparedStatement to prevent SQL injection
             PreparedStatement preparedStatement = con.prepareStatement(query);
@@ -135,7 +139,7 @@ public class DbUtils {
         // Construct final SQL statement
         String sql = "INSERT INTO " + tableName + " (" + columns + ") VALUES (" + placeholders + ")";
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/expenso", "root", "ritik768");
+        try (Connection con = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = con.prepareStatement(sql)) {
 
             // Set the JSON data column as the first parameter
@@ -198,7 +202,7 @@ public class DbUtils {
         // Construct final SQL statement
         String sql = "UPDATE " + tableName + " SET " + setClause + " WHERE id = ?";
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/expenso", "root", "ritik768");
+        try (Connection con = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = con.prepareStatement(sql)) {
 
             // Set field values dynamically in the prepared statement
@@ -227,7 +231,7 @@ public class DbUtils {
     public <T> List<T> returnedAsList(String query, Class<T> clazz, Object... parameters) throws Exception {
         List<T> resultList = new ArrayList<>();
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/expenso", "root", "ritik768");
+        try (Connection con = DriverManager.getConnection(url, user, password);
              PreparedStatement preparedStatement = con.prepareStatement(query)) {
 
             // Set parameters (if any) in the prepared statement
