@@ -1,6 +1,7 @@
 package com.example.expenso.KeywordCategory;
 
 public class AddCategoryRequest {
+    private String transferFrom;
     private String transferTo;
     private String category;
 
@@ -18,5 +19,13 @@ public class AddCategoryRequest {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getTransferFrom() {
+        return transferFrom;
+    }
+
+    public void setTransferFrom(String transferFrom) {
+        this.transferFrom = transferFrom;
     }
 }

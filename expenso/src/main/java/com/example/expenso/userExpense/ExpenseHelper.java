@@ -11,6 +11,7 @@ import com.example.expenso.transaction.TransactionInfo;
 import com.example.expenso.user.UserDetails;
 import com.example.expenso.user.UserHelper;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 
@@ -32,7 +33,7 @@ public class ExpenseHelper {
 
 //        ************ Cateogry fetching**************
 
-        String category = categorizeExpense(parsedSms.getTransferTo());
+        String category = categorizeExpense(parsedSms.getTransferTo(),parsedSms.getTransferFrom());
         if(!ObjectUtils.isEmpty(category)) userExpense.setCategory(category);
 
 //        ************** Populating transaction info **************
@@ -71,13 +72,25 @@ public class ExpenseHelper {
     }
 
     //       Method to categorize the expense
-    private String categorizeExpense(String transferTo)throws Exception {
-        // Lowercase the transferTo to make comparison case-insensitive
-        String transferToLower = transferTo.toLowerCase();
+    private String categorizeExpense(String transferTo,String transferFrom)throws Exception {
+
+        if(transferTo!=null){
+            // Lowercase the transferTo to make comparison case-insensitive
+            String transferToLower = transferTo.toLowerCase();
 
 //        ********** Get Catogry Based on transferTo from DB*********
-        KeywordCategory keywordCategory = new CategoryDataAccess().fetchCategory(transferToLower);
-        if(!ObjectUtils.isEmpty(keywordCategory)) return keywordCategory.getCategory();
+            KeywordCategory keywordCategory = new CategoryDataAccess().fetchCategory(transferToLower);
+            if(!ObjectUtils.isEmpty(keywordCategory)) return keywordCategory.getCategory();
+        }
+        else{
+            // Lowercase the transferTo to make comparison case-insensitive
+            String transferFromLower = transferFrom.toLowerCase();
+
+//        ********** Get Catogry Based on transferTo from DB*********
+            KeywordCategory keywordCategory = new CategoryDataAccess().fetchCategory(transferFromLower);
+            if(!ObjectUtils.isEmpty(keywordCategory)) return keywordCategory.getCategory();
+        }
+
         return null;
     }
 
