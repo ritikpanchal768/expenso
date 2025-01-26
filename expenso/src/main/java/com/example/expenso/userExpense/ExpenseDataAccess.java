@@ -11,4 +11,10 @@ public class ExpenseDataAccess {
                 "where t.transferto = ?";
         return new DbUtils().returnedAsList(query,UserExpense.class,transferTo);
     }
+    public List<UserExpense> getUserExpenseBytransferFrom(String transferFrom) throws Exception{
+        String query = "Select u.* From userexpense u " +
+                "join transactioninfo t on u.referencenumber = t.referencenumber " +
+                "where t.transferfrom = ?";
+        return new DbUtils().returnedAsList(query,UserExpense.class,transferFrom);
+    }
 }

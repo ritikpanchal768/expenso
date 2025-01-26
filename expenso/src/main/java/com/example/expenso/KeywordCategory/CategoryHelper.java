@@ -6,6 +6,7 @@ import com.example.expenso.userExpense.ExpenseDataAccess;
 import com.example.expenso.userExpense.UserExpense;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryHelper {
@@ -19,13 +20,23 @@ public class CategoryHelper {
 //        ************ Populate Category ***********
 
         keywordCategory.setCategory(request.getCategory());
-        keywordCategory.setKeyword(request.getTransferTo().toLowerCase());
+        if(request.getTransferTo()!=null){
+            keywordCategory.setKeyword(request.getTransferTo().toLowerCase());
+        }
+        else keywordCategory.setKeyword(request.getTransferFrom().toLowerCase());
+
         keywordCategory.setCreatedBy("SYSTEM");
         keywordCategory.setCreatedOn(new Timestamp(System.currentTimeMillis()));
 
 //        ********** Fetch UserExpense **********
 
-        List<UserExpense> userExpenseList = new ExpenseDataAccess().getUserExpenseBytransferTo(request.getTransferTo());
+        List<UserExpense> userExpenseList = new ArrayList<>();
+        if(request.getTransferTo()!=null){
+            userExpenseList = new ExpenseDataAccess().getUserExpenseBytransferTo(request.getTransferTo());
+        }
+        else{
+            userExpenseList = new ExpenseDataAccess().getUserExpenseBytransferFrom(request.getTransferFrom());
+        }
         for(UserExpense userExpense : userExpenseList){
             userExpense.setCategory(request.getCategory());
             new DbUtils().updateObject(userExpense,"userExpense", userExpense.getId());
