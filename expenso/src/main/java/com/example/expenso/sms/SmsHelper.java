@@ -77,7 +77,8 @@ public class SmsHelper {
             // Patterns for matching SMS content
             String accountPattern = "(A/c|A/C)\\s([A-Za-z0-9]+)(?:-debited)?"; // Account number pattern
             String amountPattern = "(\\d{1,13}\\.\\d{1,2})"; // Updated amount regex
-            String transferToPattern = "trf to\\s([A-Za-z\\s]+?)\\s?Ref"; // Transfer to (name of the recipient)
+            String transferToPattern = "trf to\\s([\\w\\s-]+?)\\s?Ref";
+            // Transfer to (name of the recipient)
             String referencePattern = "(Ref\\s?No\\.?\\s?(\\d+))|(Refno\\s?(\\d+))"; // Reference number pattern (Ref No and Refno)
             String datePattern = "date\\s(\\d{1,2}[A-Za-z]{3}\\d{2})"; // Date pattern
             String bankPattern = "(SBI)"; // Bank name pattern (hardcoded for simplicity)
