@@ -10,16 +10,23 @@ import com.example.expenso.sms.SmsHelper;
 import com.example.expenso.transaction.TransactionInfo;
 import com.example.expenso.user.UserDetails;
 import com.example.expenso.user.UserHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class ExpenseHelper {
-    public CommonResponse<UserExpense> addExpenseRequest(AddUserExpenseRequest request)throws Exception{
+    private static final Logger logger = LoggerFactory.getLogger(ExpenseHelper.class);
+    public CommonResponse<AddUserExpenseResponse> addExpenseRequest(AddUserExpenseRequest request)throws Exception{
 
 //        ************* Declaration ****************
-        CommonResponse<UserExpense> commonResponse = new CommonResponse();
+        CommonResponse<AddUserExpenseResponse> commonResponse = new CommonResponse();
+        AddUserExpenseResponse addUserExpenseResponse = new AddUserExpenseResponse();
         UserExpense userExpense = new UserExpense();
         TransactionInfo transactionInfo = new TransactionInfo();
 
@@ -30,6 +37,12 @@ public class ExpenseHelper {
 //         ************** Parsing SMS ***************
 
         Sms parsedSms = new SmsHelper().parseSms(request.getSms());
+//        ************** Validate request After Parsing ***************
+        commonResponse = new AddExpenseBusinessValidations().addExpenseBVAfterParsing(parsedSms,addUserExpenseResponse);
+        if(!commonResponse.getValid()){
+            logger.info("repeat : {}",addUserExpenseResponse.getRepeat());
+            return commonResponse;
+        }
 
 //        ************ Cateogry fetching**************
 
@@ -40,14 +53,25 @@ public class ExpenseHelper {
         ExpensoUtils.copyNonNullFields(parsedSms,transactionInfo);
         transactionInfo.setUserId(userDetails.getId());
         transactionInfo.setCreatedBy("SYSTEM");
-        transactionInfo.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+        if(!StringUtils.isEmpty(request.getTimeStamp())){
+
+            // Convert String to long
+            long timestampMillis = Long.parseLong(request.getTimeStamp());
+            transactionInfo.setCreatedOn(new Timestamp(timestampMillis));
+        }
+        else transactionInfo.setCreatedOn(new Timestamp(System.currentTimeMillis()));
 
 //        ************** Populating transaction info **************
         ExpensoUtils.copyNonNullFields(parsedSms,userExpense);
         userExpense.setUserId(userDetails.getId());
         userExpense.setSms(request.getSms());
         userExpense.setCreatedBy("SYSTEM");
-        userExpense.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+        if(!StringUtils.isEmpty(request.getTimeStamp())){
+            // Convert String to long
+            long timestampMillis = Long.parseLong(request.getTimeStamp());
+            userExpense.setCreatedOn(new Timestamp(timestampMillis));
+        }
+        else userExpense.setCreatedOn(new Timestamp(System.currentTimeMillis()));
 
 //        ********** Save DataBase Details **************
 
@@ -55,17 +79,17 @@ public class ExpenseHelper {
         new DbUtils().saveObject(transactionInfo,"transactionInfo");
 
 //        ********* Common Response **************
+        ExpensoUtils.copyNonNullFields(userExpense,addUserExpenseResponse);
+        logger.info("repeat : {}",addUserExpenseResponse.getRepeat());
         if(ObjectUtils.isEmpty(category)){
             commonResponse.setCode("200");
             commonResponse.setResponseMessage("Expense Added Successfully But this is a new Category");
-            commonResponse.setResponseObject(userExpense);
-
+            commonResponse.setResponseObject(addUserExpenseResponse);
         }
         else{
             commonResponse.setCode("200");
             commonResponse.setResponseMessage("Expense Added Successfully");
-            commonResponse.setResponseObject(userExpense);
-
+            commonResponse.setResponseObject(addUserExpenseResponse);
         }
 
         return commonResponse;
