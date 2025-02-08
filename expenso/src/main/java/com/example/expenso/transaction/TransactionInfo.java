@@ -16,6 +16,7 @@ public class TransactionInfo extends CommonExtend {
     private String via;
     private String bank;
     private String transferTo;
+    private String transferFrom;
     private String debitedAccountNumber;
     private String transactionType;
     private String infoFrom;
@@ -106,5 +107,13 @@ public class TransactionInfo extends CommonExtend {
 
     public void setInfoFrom(String infoFrom) {
         this.infoFrom = infoFrom;
+    }
+
+    public String getTransferFrom() {
+        return transferFrom;
+    }
+
+    public void setTransferFrom(String transferFrom) {
+        this.transferFrom = transferFrom;
     }
 }

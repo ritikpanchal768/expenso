@@ -15,6 +15,7 @@ public class Sms extends CommonExtend {
     private String via;
     private String bank;
     private String transferTo;
+    private String transferFrom;
     private String debitedAccountNumber;
     private String transactionType;
     private String infoFrom = "SMS";
@@ -97,5 +98,13 @@ public class Sms extends CommonExtend {
 
     public void setInfoFrom(String infoFrom) {
         this.infoFrom = infoFrom;
+    }
+
+    public String getTransferFrom() {
+        return transferFrom;
+    }
+
+    public void setTransferFrom(String transferFrom) {
+        this.transferFrom = transferFrom;
     }
 }

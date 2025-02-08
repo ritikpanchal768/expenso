@@ -14,7 +14,7 @@ public class TransactionDataAccess {
                 "join userdetails u on u.id = t.userid " +
                 "join userexpense ue on ue.referencenumber = t.referencenumber" +
                 " where u.mobileNumber = ? " +
-                "order by transactiondate desc";
+                "order by createdon desc";
         return new DbUtils().returnedAsList(query, TransactionDisplay.class,mobileNumber);
     }
 }
