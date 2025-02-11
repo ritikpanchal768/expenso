@@ -14,6 +14,7 @@ public class TransactionDisplay extends CommonExtend {
     private String via;
     private String bank;
     private String transferTo;
+    private String transferFrom;
     private String debitedAccountNumber;
     private String transactionType;
     private String infoFrom;
@@ -113,5 +114,13 @@ public class TransactionDisplay extends CommonExtend {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getTransferFrom() {
+        return transferFrom;
+    }
+
+    public void setTransferFrom(String transferFrom) {
+        this.transferFrom = transferFrom;
     }
 }

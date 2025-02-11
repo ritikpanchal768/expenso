@@ -95,6 +95,54 @@ public class ExpenseHelper {
         return commonResponse;
     }
 
+    public CommonResponse<AddUserExpenseResponse> addCashExpenseRequest(AddCashExpenseRequest request)throws Exception{
+
+//        ************* Declaration ****************
+        CommonResponse<AddUserExpenseResponse> commonResponse = new CommonResponse();
+        AddUserExpenseResponse addUserExpenseResponse = new AddUserExpenseResponse();
+        UserExpense userExpense = new UserExpense();
+        TransactionInfo transactionInfo = new TransactionInfo();
+
+//        *********** Fetch User Details **********
+
+        UserDetails userDetails = new UserHelper().viewByMobileNumber(request.getMobileNumber());
+
+//        ************ Cateogry fetching**************
+
+        if(!ObjectUtils.isEmpty(request.getCategory())) userExpense.setCategory(request.getCategory());
+
+//        ************** Populating transaction info **************
+        String referenceNumber = new ExpensoUtils().generateCashExpenseId("CASH");
+        transactionInfo.setAmount(request.getAmount());
+        transactionInfo.setTransactionDate(Timestamp.valueOf(request.getTransactionDate()));
+        transactionInfo.setInfoFrom("Cash Expense");
+        transactionInfo.setUserId(userDetails.getId());
+        transactionInfo.setReferenceNumber(referenceNumber);
+        transactionInfo.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+
+//        ************** Populating transaction info **************
+        userExpense.setUserId(userDetails.getId());
+        userExpense.setAmount(request.getAmount());
+        userExpense.setCategory(request.getCategory());
+        userExpense.setReferenceNumber(referenceNumber);
+        userExpense.setCreatedBy(userDetails.getId());
+        userExpense.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+
+//        ********** Save DataBase Details **************
+
+        new DbUtils().saveObject(userExpense,"userExpense");
+        new DbUtils().saveObject(transactionInfo,"transactionInfo");
+
+//        ********* Common Response **************
+        ExpensoUtils.copyNonNullFields(userExpense,addUserExpenseResponse);
+
+        commonResponse.setCode("200");
+        commonResponse.setResponseMessage(" Cash Expense Added Successfully");
+        commonResponse.setResponseObject(addUserExpenseResponse);
+
+
+        return commonResponse;
+    }
     //       Method to categorize the expense
     private String categorizeExpense(String transferTo,String transferFrom)throws Exception {
 

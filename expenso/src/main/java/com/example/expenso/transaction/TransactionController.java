@@ -42,4 +42,18 @@ public class TransactionController {
         }
         return commonResponse;
     }
+    @GetMapping("/viewCategoryWise/{mobileNumber}")
+    public CommonResponse<List<TransactionSummary>> viewCategoryWise(@PathVariable String mobileNumber)throws Exception {
+        logger.info("************* Inside Get Transactions Category wise Controller ****************");
+        CommonResponse<List<TransactionSummary>> commonResponse = new CommonResponse<>();
+        try {
+            List<TransactionSummary> transactionSummary = new TransactionDataAccess().getCategoryWiseTotal(mobileNumber);
+            commonResponse.setCode("200");
+            commonResponse.setResponseMessage("Successfully Fetched");
+            commonResponse.setResponseObject(transactionSummary);
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+        return commonResponse;
+    }
 }
