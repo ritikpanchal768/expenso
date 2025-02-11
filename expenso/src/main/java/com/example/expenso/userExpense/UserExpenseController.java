@@ -16,13 +16,25 @@ import java.util.Optional;
 public class UserExpenseController {
     private static final Logger logger = LoggerFactory.getLogger(UserExpenseController.class);
     @PostMapping("/create/expense")
-    public CommonResponse<UserExpense> addExpense(@RequestBody AddUserExpenseRequest request)throws Exception {
+    public CommonResponse<AddUserExpenseResponse> addExpense(@RequestBody AddUserExpenseRequest request)throws Exception {
         logger.info("************* Inside Add Expense Controller ****************");
 
-        CommonResponse<UserExpense> commonResponse;
+        CommonResponse<AddUserExpenseResponse> commonResponse;
         try {
             commonResponse = new ExpenseHelper().addExpenseRequest(request);
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+        return commonResponse;
 
+    }
+    @PostMapping("/create/cashExpense")
+    public CommonResponse<AddUserExpenseResponse> addCashExpense(@RequestBody AddCashExpenseRequest request)throws Exception {
+        logger.info("************* Inside Cash Add Expense Controller ****************");
+
+        CommonResponse<AddUserExpenseResponse> commonResponse;
+        try {
+            commonResponse = new ExpenseHelper().addCashExpenseRequest(request);
         } catch (Exception e) {
             throw new Exception(e);
         }
