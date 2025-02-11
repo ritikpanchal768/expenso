@@ -28,5 +28,18 @@ public class UserExpenseController {
         return commonResponse;
 
     }
+    @PostMapping("/create/cashExpense")
+    public CommonResponse<AddUserExpenseResponse> addCashExpense(@RequestBody AddCashExpenseRequest request)throws Exception {
+        logger.info("************* Inside Cash Add Expense Controller ****************");
+
+        CommonResponse<AddUserExpenseResponse> commonResponse;
+        try {
+            commonResponse = new ExpenseHelper().addCashExpenseRequest(request);
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+        return commonResponse;
+
+    }
 
 }
