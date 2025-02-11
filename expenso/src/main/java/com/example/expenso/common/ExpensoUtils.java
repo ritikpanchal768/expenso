@@ -1,6 +1,8 @@
 package com.example.expenso.common;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ExpensoUtils {
     /**
@@ -36,5 +38,11 @@ public class ExpensoUtils {
                 }
             }
         }
+    }
+
+    public String generateCashExpenseId(String prifix) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String timestamp = formatter.format(new Date());
+        return "CASH" + timestamp;            //  ID based on the current timestamp:
     }
 }
