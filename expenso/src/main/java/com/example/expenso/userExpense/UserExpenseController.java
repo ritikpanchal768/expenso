@@ -1,6 +1,7 @@
 package com.example.expenso.userExpense;
 
 import com.example.expenso.common.commonResponse.CommonResponse;
+import com.example.expenso.requestLogging.RequestLoggingHelper;
 import com.example.expenso.sms.Sms;
 import com.example.expenso.user.UserDetails;
 import org.slf4j.Logger;
@@ -23,8 +24,10 @@ public class UserExpenseController {
         try {
             commonResponse = new ExpenseHelper().addExpenseRequest(request);
         } catch (Exception e) {
+            new RequestLoggingHelper().requestLogging(request,e.toString());
             throw new Exception(e);
         }
+        new RequestLoggingHelper().requestLogging(request,commonResponse);
         return commonResponse;
 
     }
@@ -36,8 +39,10 @@ public class UserExpenseController {
         try {
             commonResponse = new ExpenseHelper().addCashExpenseRequest(request);
         } catch (Exception e) {
+            new RequestLoggingHelper().requestLogging(request,e.toString());
             throw new Exception(e);
         }
+        new RequestLoggingHelper().requestLogging(request,commonResponse);
         return commonResponse;
 
     }

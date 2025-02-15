@@ -40,7 +40,6 @@ public class ExpenseHelper {
 //        ************** Validate request After Parsing ***************
         commonResponse = new AddExpenseBusinessValidations().addExpenseBVAfterParsing(parsedSms,addUserExpenseResponse);
         if(!commonResponse.getValid()){
-            logger.info("repeat : {}",addUserExpenseResponse.getRepeat());
             return commonResponse;
         }
 

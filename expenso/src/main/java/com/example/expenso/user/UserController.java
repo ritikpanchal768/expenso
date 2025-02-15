@@ -2,6 +2,7 @@ package com.example.expenso.user;
 
 
 import com.example.expenso.common.commonResponse.CommonResponse;
+import com.example.expenso.requestLogging.RequestLoggingHelper;
 import com.example.expenso.sms.Sms;
 import com.example.expenso.userExpense.AddUserExpenseRequest;
 import com.example.expenso.userExpense.ExpenseHelper;
@@ -24,8 +25,10 @@ public class UserController {
         try {
             commonResponse = new UserHelper().addUser(request);
         } catch (Exception e) {
+            new RequestLoggingHelper().requestLogging(request,e.toString());
             throw new Exception(e);
         }
+        new RequestLoggingHelper().requestLogging(request,commonResponse);
         return commonResponse;
     }
 }
