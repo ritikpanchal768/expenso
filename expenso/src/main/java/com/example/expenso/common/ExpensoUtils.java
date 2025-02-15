@@ -4,7 +4,16 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class ExpensoUtils {
+
+
+    private static Gson gson = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd HH:mm:ss") // Specify the date format
+            .create();
+
     /**
      * Copies all non-null fields from source object to target object.
      *
@@ -44,5 +53,16 @@ public class ExpensoUtils {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String timestamp = formatter.format(new Date());
         return "CASH" + timestamp;            //  ID based on the current timestamp:
+    }
+
+
+    public static String toJSON(Object object){
+
+        if (object == null){
+            return null;
+        }
+
+        String objectJson = gson.toJson(object);
+        return objectJson;
     }
 }

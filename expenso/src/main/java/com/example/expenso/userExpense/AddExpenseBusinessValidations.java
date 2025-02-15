@@ -11,6 +11,15 @@ public class AddExpenseBusinessValidations {
 
         CommonResponse commonResponse = new CommonResponse();
 
+        if(ObjectUtils.isEmpty(request.getReferenceNumber()) || (ObjectUtils.isEmpty(request.getTransferTo()) && ObjectUtils.isEmpty(request.getTransferFrom()))
+                || ObjectUtils.isEmpty(request.getTransactionType()) || ObjectUtils.isEmpty(request.getTransactionDate())){
+            commonResponse.setCode("401");
+            commonResponse.setResponseMessage("Bad Sms not parsed properly");
+            commonResponse.setResponseObject(addUserExpenseResponse);
+            commonResponse.setValid(false);
+            return commonResponse;
+        }
+
         TransactionInfo transactionInfo = new TransactionDataAccess().getByReferenceNo(request.getReferenceNumber());
         if(!ObjectUtils.isEmpty(transactionInfo)){
             addUserExpenseResponse.setRepeat(true);
